@@ -1,0 +1,39 @@
+.question-title {
+    margin-bottom: 10px;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.meta img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.answer .content p{
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.answer .content img {
+    max-width: 100%;
+}
+
+.view-more {
+    margin: 16px 0;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.view-more a {
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 8px;
+    width: 100%;
+    color: #999;
+    background-color: #f3f3f3;
+    cursor: pointer;
+}
