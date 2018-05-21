@@ -1,43 +1,31 @@
 <template>
-  <div id="app" @closeMenu="closeMenu">
-    <router-view @showMenu="showMenu"/>
-    <NavMenu v-show="isShow" @closeMenu="closeMenu"></NavMenu>
+  <div id="app">
+    <router-view />
+
   </div>
 </template>
 
 <script>
-  import NavMenu from './components/NavMenu'
-  
-  export default {
-    name: 'App',
-    data() {
-      return {
-        isShow: false
-      }
-    },
-    components: {
-      NavMenu,
-    },
-    methods: {
-      showMenu(data) {
-        this.isShow = data;
-      },
-      closeMenu(data) {
+export default {
+	name: 'App',
+	data() {
+		return {
 
-        this.isShow = data;
-        console.log('???')
-      },
-    }
-  }
+		};
+	},
+	components: {},
+
+	methods: {},
+};
 </script>
 
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-  }
-  
-  #app {
-    height: 100vh;
-  }
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#app {
+	height: 100vh;
+}
 </style>

@@ -1,0 +1,121 @@
+<template>
+    <div>
+        <mt-header>
+            <div slot="left">
+                <i class="iconfont icon-back" @click="goBack"></i>
+            </div>
+            <div slot="right" class="right">
+                <i class="iconfont icon-share header-item"></i>
+                <span class="header-item">
+                    <i class="iconfont icon-favorite"></i>
+                    <span>123</span>
+                </span>
+                <span class="header-item">
+                    <i class="iconfont icon-comments"></i>
+                    <span>567</span>
+                </span>
+                <i class="iconfont icon-good header-item"></i>
+            </div>
+        </mt-header>
+        <div class="details article-container">
+            <header class="article-header">
+                <img :src="image" :alt="title" class="article-header-img" onerror="this.src='http://iph.href.lu/375x250'">
+                <h3 class="article-header-title">{{title}}</h3>
+                <span class="article-header-img-source">{{image_source}}</span>
+            </header>
+            <div class="article-content" v-html="body"></div>
+        </div>
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+	name: 'Details',
+	data() {
+		return {
+			body: '',
+			image_source: '',
+			title: '',
+			images: '',
+			image: '',
+		};
+	},
+	mounted() {
+		this.getDetails();
+	},
+	methods: {
+		goBack() {
+			history.go(-1);
+		},
+		getDetails() {
+			const post_id = this.$route.params.post_id;
+			const that = this;
+			this.$http
+				.post('/details', {
+					post_id,
+				})
+				.then(function(response) {
+					that.body = response.data.body;
+					that.image_source = response.data.image_source;
+					that.title = response.data.title;
+					that.images = response.data.images;
+					that.image = response.data.image;
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+		},
+	},
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="less">
+.right {
+	display: flex;
+	align-items: center;
+}
+
+.header-item {
+	margin-right: 12px;
+}
+
+.article-container header {
+	position: relative;
+	height: 250px;
+	overflow: hidden;
+}
+
+.article-header-img {
+	position: absolute;
+	width: 100%;
+}
+
+.article-header-title {
+	position: absolute;
+	bottom: 0;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 10px 16px 20px;
+	color: #fff;
+	font-weight: normal;
+	line-height: 1.5;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.article-header-img-source {
+	position: absolute;
+	bottom: 6px;
+	right: 6px;
+	font-size: 10px;
+	color: #fff;
+}
+
+.article-content {
+	box-sizing: border-box;
+	padding: 10px;
+	overflow: hidden;
+}
+</style>

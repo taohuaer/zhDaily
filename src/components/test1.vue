@@ -1,30 +1,26 @@
 <template>
     <div>
-		
-        <test1 text="this is text">
-			<h4 slot="bottom">Bottom</h4>
-			<h3 slot="top">TOP</h3>
-		</test1>
+        <slot name="top"></slot>
+        {{content}}
+        <slot name="bottom"></slot>
+        <p class="test-data">{{this.$data.global}}</p>
     </div>
 </template>
 
 <script>
-import test1 from './test1';
 
 export default {
 	name: 'Test',
 	data() {
 		return {
-			
 			content: '',
 		};
 	},
-	components: {
-		test1
-	},
-	mounted() {
-		
-	},
+    props: ['text'],
+    mounted() {
+        this.content = this.text;
+        
+    },
 	methods: {
 		
 	},

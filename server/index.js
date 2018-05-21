@@ -1,23 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-// const axios = require('axios');
+const bodyParser = require('body-parser');
 const router = require('./router');
 const app = express();
 
- 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(router);
  
-// app.get('/', function (req, res, next) {
-//     axios
-//     .get('https://news-at.zhihu.com/api/4/news/3892357')
-//     .then(function(response) {
-//         res.json(response.data);
-//     })
-//     .catch(function(error) {
-//         console.log(error);
-//     });
-// })
+app.get('/', function (req, res, next) {
+    res.send('hello world')
+})
  
 app.listen(3333, function () {
   console.log('running at port 3333');

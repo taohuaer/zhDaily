@@ -1,3 +1,18 @@
 a {
     text-decoration: none;
 }
+
+p {
+    line-height: 1.5;
+}
+
+
+/* 限制屏幕滚动 */
+.scroll-locked {
+    height: 100vh;
+    overflow: hidden;
+}
+
+body {
+    cursor: pointer;
+}

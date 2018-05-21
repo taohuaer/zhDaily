@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/pages/Home'
-import Details from '@/components/Details'
+import Theme from '@/pages/Theme'
+import HomeDetails from '@/pages/HomeDetails'
+import ThemeDetails from '@/pages/ThemeDetails'
 import Test from '@/components/Test'
 
 Vue.use(Router)
@@ -13,15 +15,27 @@ export default new Router({
       name: 'Home',
       component: Home
     },
+
     {
-      path: '/details',
-      name: 'Details',
-      component: Details
+      path: '/home-details/:post_id',
+      name: 'HomeDetails',
+      component: HomeDetails
+    },
+    {
+      path: '/theme-details/:post_id',
+      name: 'ThemeDetails',
+      component: ThemeDetails
+    },
+    {
+      path: '/theme/:theme_id',
+      name: 'Theme',
+      component: Theme
     },
     {
       path: '/test',
       name: 'Test',
       component: Test
     }
+
   ]
 })

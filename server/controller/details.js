@@ -1,8 +1,9 @@
 const axios = require('axios');
 
 module.exports = function(req, res, next) {
+    const post_id = req.body.post_id;
     axios
-    .get('https://news-at.zhihu.com/api/4/news/latest')
+    .get(`https://news-at.zhihu.com/api/4/news/${post_id}`)
     .then(function(response) {
         res.send(response.data);
     })
