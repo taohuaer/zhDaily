@@ -15,3 +15,5 @@ app.get('/', function (req, res, next) {
 app.listen(3333, function () {
   console.log('running at port 3333');
 })
+
+app.use(express.static('./../dist'));

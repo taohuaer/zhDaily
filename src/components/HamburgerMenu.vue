@@ -14,10 +14,7 @@
 							<i class="iconfont icon-favorite"></i>
 							<span>我的收藏</span>
 						</div>
-						<div class="download">
-							<i class="iconfont icon-icondownload"></i>
-							<span>离线下载</span>
-						</div>
+
 					</div>
 				</header>
 				<ul class="menu-list">

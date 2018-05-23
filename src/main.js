@@ -19,8 +19,10 @@ import 'mint-ui/lib/style.css';
 import './iconfont/iconfont.css';
 import './style/normal.css';
 import './style/details.css';
+import './style/base.css';
 
 Vue.use(MintUI);
+Vue.use(MintUI.InfiniteScroll);
 
 
 Vue.config.productionTip = false;

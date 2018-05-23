@@ -1,12 +1,9 @@
 <template>
-	<div class="theme">
+	<div class="theme mt40 bgc-eee">
 		<mt-header class="nav-bar">
 			<div slot="left">
 				<HamburgerMenu></HamburgerMenu>
 				<h2 class="theme-name">{{name}}</h2>
-			</div>
-			<div slot="right">
-				（订阅）
 			</div>
 		</mt-header>
 		<div class="theme-header">
@@ -19,14 +16,18 @@
 			<img v-for="(item, index) in editors" :key="'editors-item'+index" :src="item.avatar" class="editor-avatar" />
 		</div>
 		<div class="article-list">
-			<ul>
+			<ul v-infinite-scroll="loadMore" infinite-scroll-disabled="disabledLoading" infinite-scroll-distance="30">
 				<li v-for="(item, index) in stories" :key="'article-item'+index">
 					<router-link :to="'/theme-details/'+item.id" class="article-list-item">
 						<h3>{{item.title}}</h3>
-						<img :src="(item.images)?item.images[0]:''" :alt="item.title" v-if="!!(item.images)"/>
+						<img :src="(item.images)?item.images[0]:''" :alt="item.title" v-if="!!(item.images)" />
 					</router-link>
 				</li>
 			</ul>
+			<div class="loading-more" v-if="loading">
+				<mt-spinner type="fading-circle"></mt-spinner>
+				<span class="loading-text">正在加载</span>
+			</div>
 		</div>
 	</div>
 </template>
@@ -45,6 +46,9 @@ export default {
 			image: '',
 			editors: '',
 			image_source: '',
+			currentStoryId: '',
+			loading: false,
+			disabledLoading: false
 		};
 	},
 	props: [],
@@ -52,7 +56,6 @@ export default {
 		HamburgerMenu,
 	},
 	mounted() {
-		this.test();
 		const theme_id = this.$route.params.theme_id;
 		const that = this;
 
@@ -61,6 +64,7 @@ export default {
 				theme_id,
 			})
 			.then(function(response) {
+				const storiesLength = response.data.stories.length;
 				that.stories = response.data.stories;
 				that.description = response.data.description;
 				that.background = response.data.background;
@@ -68,6 +72,8 @@ export default {
 				that.image = response.data.image;
 				that.editors = response.data.editors;
 				that.image_source = response.data.image_source;
+				that.currentStoryId = response.data.stories[storiesLength - 1].id;
+				console.log(that.currentStoryId);
 			})
 			.catch(function(error) {
 				console.log(error);
@@ -76,42 +82,75 @@ export default {
 	watch: {
 		$route(to, from) {
 			//数据操作
-					const theme_id = this.$route.params.theme_id;
-		const that = this;
+			const theme_id = this.$route.params.theme_id;
+			const that = this;
 
-		this.$http
-			.post('/theme', {
-				theme_id,
-			})
-			.then(function(response) {
-				that.stories = response.data.stories;
-				that.description = response.data.description;
-				that.background = response.data.background;
-				that.name = response.data.name;
-				that.image = response.data.image;
-				that.editors = response.data.editors;
-				that.image_source = response.data.image_source;
-			})
-			.catch(function(error) {
-				console.log(error);
-			});
+			this.$http
+				.post('/theme', {
+					theme_id,
+				})
+				.then(function(response) {
+					that.stories = response.data.stories;
+					that.description = response.data.description;
+					that.background = response.data.background;
+					that.name = response.data.name;
+					that.image = response.data.image;
+					that.editors = response.data.editors;
+					that.image_source = response.data.image_source;
+					that.currentStoryId = response.data.stories[0].id;
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
 		},
 	},
 	methods: {
-		test() {
-			console.log('test router')
-		}
+		loadMore() {
+			this.loading = true;
+			this.getBefore(this.currentStoryId);
+			setTimeout(() => {
+				this.loading = false;
+			}, 2500);
+		},
+		getBefore(currentStoryId) {
+			const that = this;
+			const theme_id = this.$route.params.theme_id;
+			const story_id = this.currentStoryId;
+
+			this.$http
+				.post('/themeBefore', {
+					theme_id,
+					story_id,
+				})
+				.then(function(response) {
+					const beforeStories = response.data.stories;
+					const storiesLength = response.data.stories.length;
+					that.stories.push(...response.data.stories);
+					if (response.data.stories.length > 0) {
+						that.currentStoryId = response.data.stories[storiesLength - 1].id;
+					} else {
+						that.disabledLoading = true;
+					}
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+		},
 	},
 };
 </script>
 
 <style scoped lang="less">
 .theme {
-	background-color: #f3f3f3;
 	overflow: hidden;
 }
 
 .nav-bar {
+	position: fixed;
+	top: 0;
+	z-index: 999;
+	width: 100%;
+
 	.theme-name {
 		display: inline-block;
 		font-weight: normal;
@@ -192,5 +231,16 @@ export default {
 			margin-left: 12px;
 		}
 	}
+}
+
+.loading-more {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 20px;
+}
+
+.loading-text {
+	margin-left: 10px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-	<div class="home">
-		<mt-header>
+	<div class="home mt40 bgc-eee">
+		<mt-header class="nav-bar">
 			<div slot="left">
 				<HamburgerMenu></HamburgerMenu>
 				<h2>首页</h2>
@@ -12,7 +12,7 @@
 		</mt-header>
 		<mt-swipe :auto="4000" class="home-swipe">
 			<mt-swipe-item v-for="(item, index) in topStories" :key="'home-swipe-'+index" class="home-swipe-item">
-				<router-link :to="'/details/'+item.id" class="home-swipe-item-link">
+				<router-link :to="'/home-details/'+item.id" class="home-swipe-item-link">
 					<img :src="item.image" :alt="item.title" class="home-swipe-item-img" />
 					<h3 class="home-swipe-item-title">{{item.title}}</h3>
 				</router-link>
@@ -20,22 +20,26 @@
 		</mt-swipe>
 		<div class="article-list">
 			<h4>今日热文</h4>
-			<ul>
+			<ul v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="30">
 				<li v-for="(item, index) in stories" :key="'home-article-item'+index">
 					<router-link :to="'/home-details/'+item.id" class="article-list-item">
 						<h3>{{item.title}}</h3>
-						<img :src="item.images[0]" :alt="item.title" />
+						<img :src="item.images?item.images[0]:''" :alt="item.title" />
 					</router-link>
 				</li>
 			</ul>
+		</div>
+		<div class="loading-more"  v-if="loading">
+			<mt-spinner type="fading-circle"></mt-spinner>
+			<span class="loading-text">正在加载</span>
 		</div>
 	</div>
 </template>
 
 <script>
-import CatePage from './../components/CatePage';
 import HamburgerMenu from './../components/HamburgerMenu';
-import { unlockScroll } from './../utils/scrollControl'
+import { unlockScroll } from './../utils/scrollControl';
+import { getYesterday } from './../utils/date';
 
 export default {
 	name: 'Home',
@@ -44,22 +48,23 @@ export default {
 			date: '',
 			stories: [],
 			topStories: [],
+			currentDate: (new Date()).getTime(),
+			getYesterday: getYesterday,
+			loading: false,
 		};
 	},
-	props: ['allow-scroll'],
 	components: {
 		HamburgerMenu,
-		CatePage,
-
 	},
 	mounted() {
 		//解除scroll限制
-		unlockScroll()
+		unlockScroll();
 
 		const that = this;
 		this.$http
 			.get('/latest')
 			.then(function(response) {
+				that.date = response.data.date;
 				that.stories = response.data.stories;
 				that.topStories = response.data.top_stories;
 			})
@@ -68,15 +73,35 @@ export default {
 			});
 	},
 	methods: {
-		pop() {
-			Toast('提示信息');
+		loadMore() {
+			this.loading = true;
+			const yesterday = this.getYesterday(this.currentDate);
+			this.currentDate = yesterday.currentDate;
+			this.getBefore(yesterday.date);
+			setTimeout(() => {
+				this.loading = false;
+			}, 2000);
 		},
-
+		getBefore(date) {
+			const that = this;
+			this.$http
+				.post('/before', {
+					date,
+				})
+				.then(function(response) {
+					const beforeStories = response.data.stories;
+					that.stories.push(...response.data.stories);
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+		},
 	},
 };
 </script>
 
 <style scoped lang="less">
+
 h2 {
 	display: inline;
 	font-weight: normal;
@@ -163,12 +188,22 @@ h2 {
 			max-width: 100%;
 			height: 80px;
 		}
-
 	}
 }
 
 .prohibit-scroll {
 	height: 100vh;
 	overflow: hidden;
+}
+
+.loading-more {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 20px;
+}
+
+.loading-text {
+	margin-left: 10px;
 }
 </style>

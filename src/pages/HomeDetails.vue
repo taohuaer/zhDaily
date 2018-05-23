@@ -1,36 +1,33 @@
 <template>
-    <div>
-        <mt-header>
-            <div slot="left">
-                <i class="iconfont icon-back" @click="goBack"></i>
-            </div>
-            <div slot="right" class="right">
-                <i class="iconfont icon-share header-item"></i>
-                <span class="header-item">
-                    <i class="iconfont icon-favorite"></i>
-                    <span>123</span>
-                </span>
-                <span class="header-item">
-                    <i class="iconfont icon-comments"></i>
-                    <span>567</span>
-                </span>
-                <i class="iconfont icon-good header-item"></i>
-            </div>
-        </mt-header>
-        <div class="details article-container">
-            <header class="article-header">
-                <img :src="image" :alt="title" class="article-header-img" onerror="this.src='http://iph.href.lu/375x250'">
-                <h3 class="article-header-title">{{title}}</h3>
-                <span class="article-header-img-source">{{image_source}}</span>
-            </header>
-            <div class="article-content" v-html="body"></div>
-        </div>
-    </div>
+	<div>
+		<mt-header>
+			<div slot="left">
+				<GoBack></GoBack>
+			</div>
+			<div slot="right" class="right">
+				<span class="header-item">
+					<i class="iconfont icon-favorite"></i>
+					<span>{{popularity}}</span>
+				</span>
+				<span class="header-item">
+					<i class="iconfont icon-comments"></i>
+					<span>{{comments}}</span>
+				</span>
+			</div>
+		</mt-header>
+		<div class="details article-container">
+			<header class="article-header">
+				<img :src="image" :alt="title" class="article-header-img" onerror="this.src='http://iph.href.lu/375x250'">
+				<h3 class="article-header-title">{{title}}</h3>
+				<span class="article-header-img-source">{{image_source}}</span>
+			</header>
+			<div class="article-content" v-html="body"></div>
+		</div>
+	</div>
 </template>
 
 <script>
-import axios from 'axios';
-
+import GoBack from './../components/GoBack';
 export default {
 	name: 'Details',
 	data() {
@@ -40,15 +37,20 @@ export default {
 			title: '',
 			images: '',
 			image: '',
+			long_comments: '',
+			popularity: '',
+			short_comments: '',
+			comments: '',
 		};
 	},
 	mounted() {
 		this.getDetails();
+		this.getExtra();
+	},
+	components: {
+		GoBack,
 	},
 	methods: {
-		goBack() {
-			history.go(-1);
-		},
 		getDetails() {
 			const post_id = this.$route.params.post_id;
 			const that = this;
@@ -62,6 +64,23 @@ export default {
 					that.title = response.data.title;
 					that.images = response.data.images;
 					that.image = response.data.image;
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+		},
+		getExtra() {
+			const post_id = this.$route.params.post_id;
+			const that = this;
+			this.$http
+				.post('/extra', {
+					post_id,
+				})
+				.then(function(response) {
+					that.long_comments = response.data.long_comments;
+					that.popularity = response.data.popularity;
+					that.short_comments = response.data.short_comments;
+					that.comments = response.data.comments;
 				})
 				.catch(function(error) {
 					console.log(error);

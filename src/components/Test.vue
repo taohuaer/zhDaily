@@ -1,11 +1,17 @@
 <template>
-    <div>
-		
-        <test1 text="this is text">
-			<h4 slot="bottom">Bottom</h4>
-			<h3 slot="top">TOP</h3>
-		</test1>
-    </div>
+	
+	<div>
+		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
+		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
+		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
+		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
+		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
+		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
+		<ul v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="500">
+			<li v-for="(item, index) in list" :key="index">{{ item }}</li>
+		</ul>
+		<mt-spinner type="fading-circle" v-if="loading"></mt-spinner>
+	</div>
 </template>
 
 <script>
@@ -15,23 +21,27 @@ export default {
 	name: 'Test',
 	data() {
 		return {
-			
-			content: '',
+			loading: false,
+			list: [1, 2]
 		};
 	},
 	components: {
-		test1
+		test1,
 	},
-	mounted() {
-		
-	},
+	mounted() {},
 	methods: {
-		
+		loadMore() {
+			this.loading = true;
+			setTimeout(() => {
+				this.list.push(1);
+				
+				this.loading = false;
+			}, 2000);
+		},
 	},
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

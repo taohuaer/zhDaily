@@ -1,31 +1,28 @@
 <template>
-    <div>
-        <mt-header>
-            <div slot="left">
-                <i class="iconfont icon-back" @click="goBack"></i>
-            </div>
-            <div slot="right" class="right">
-                <i class="iconfont icon-share header-item"></i>
-                <span class="header-item">
-                    <i class="iconfont icon-favorite"></i>
-                    <span>123</span>
-                </span>
-                <span class="header-item">
-                    <i class="iconfont icon-comments"></i>
-                    <span>567</span>
-                </span>
-                <i class="iconfont icon-good header-item"></i>
-            </div>
-        </mt-header>
-        <div class="details article-container">
-            <div class="article-content" v-html="body"></div>
-        </div>
-    </div>
+	<div>
+		<mt-header class="fixed-header">
+			<div slot="left">
+				<GoBack></GoBack>
+			</div>
+			<div slot="right" class="right">
+				<span class="header-item">
+					<i class="iconfont icon-favorite"></i>
+					<span>{{popularity}}</span>
+				</span>
+				<span class="header-item">
+					<i class="iconfont icon-comments"></i>
+					<span>{{comments}}</span>
+				</span>
+			</div>
+		</mt-header>
+		<div class="details article-container">
+			<div class="article-content" v-html="body"></div>
+		</div>
+	</div>
 </template>
 
 <script>
-import axios from 'axios';
-
+import GoBack from './../components/GoBack';
 export default {
 	name: 'Details',
 	data() {
@@ -34,11 +31,20 @@ export default {
 			title: '',
 			share_url: '',
 			theme: '',
+			long_comments: '',
+			popularity: '',
+			short_comments: '',
+			comments: '',
+
 		};
 	},
 	mounted() {
-        this.getDetails();
-    },
+		this.getDetails();
+		this.getExtra();
+	},
+	components: {
+		GoBack,
+	},
 	methods: {
 		getDetails() {
 			const post_id = this.$route.params.post_id;
@@ -56,8 +62,22 @@ export default {
 					console.log(error);
 				});
 		},
-		goBack() {
-			history.go(-1);
+		getExtra() {
+			const post_id = this.$route.params.post_id;
+			const that = this;
+			this.$http
+				.post('/extra', {
+					post_id,
+				})
+				.then(function(response) {
+					that.long_comments = response.data.long_comments;
+					that.popularity = response.data.popularity;
+					that.short_comments = response.data.short_comments;
+					that.comments = response.data.comments;
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
 		},
 	},
 };
@@ -68,10 +88,11 @@ export default {
 .right {
 	display: flex;
 	align-items: center;
+	justify-content: flex-end;
 }
 
-.header-item {
-	margin-right: 12px;
+.header-item:not(:first-child) {
+	margin-left: 10px;
 }
 
 .article-container header {
