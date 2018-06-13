@@ -1,16 +1,8 @@
 <template>
-	
-	<div>
-		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
-		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
-		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
-		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
-		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
-		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident nobis laborum sapiente libero saepe, ipsa in repellendus dignissimos rerum ipsam possimus, minus itaque harum reiciendis repudiandae numquam eveniet aut cumque!
-		<ul v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="500">
-			<li v-for="(item, index) in list" :key="index">{{ item }}</li>
-		</ul>
-		<mt-spinner type="fading-circle" v-if="loading"></mt-spinner>
+	<div class="wrap">
+		此时的testId是：{{testId}}
+		<br/>
+		<router-link to="/test/bb">跳转到bb</router-link>
 	</div>
 </template>
 
@@ -21,22 +13,15 @@ export default {
 	name: 'Test',
 	data() {
 		return {
-			loading: false,
-			list: [1, 2]
+			testId: '',
 		};
 	},
-	components: {
-		test1,
+	mounted() {
+		this.testId = this.$route.params.testId;
 	},
-	mounted() {},
-	methods: {
-		loadMore() {
-			this.loading = true;
-			setTimeout(() => {
-				this.list.push(1);
-				
-				this.loading = false;
-			}, 2000);
+	watch: {
+		$route(to, from) {
+			this.testId = this.$route.params.testId;
 		},
 	},
 };
@@ -44,4 +29,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.wrap {
+	margin: 1em 1em 1em 9em;
+}
 </style>

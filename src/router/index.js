@@ -32,7 +32,7 @@ export default new Router({
       component: Theme
     },
     {
-      path: '/test',
+      path: '/test/:testId',
       name: 'Test',
       component: Test
     }

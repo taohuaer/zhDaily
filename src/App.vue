@@ -9,16 +9,9 @@
 import BackTop from './components/BackTop'
 export default {
 	name: 'App',
-	data() {
-		return {
-
-		};
-	},
 	components: {
 		BackTop
-	},
-
-	methods: {},
+	}
 };
 </script>
 
